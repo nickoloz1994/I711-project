@@ -1,0 +1,70 @@
+﻿@model BudgetListViewModel
+@{
+    Layout = "_Layout";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <ul class="nav nav-stacked">
+            @foreach (var budget in Model.Budgets)
+            {
+                <li><a asp-action="List" asp-route-id="@budget.Id">@budget.Name </a></li>
+            }
+        </ul>
+        <a asp-action="Create" class="btn" style="margin: 5px;">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+            Add new budget
+        </a>
+    </div>
+    @{
+        if (Model.Budget != null)
+        {
+            <div class="col-md-9">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        @Model.Budget.Name
+                    </div>
+                    <div class="panel-body">
+                        <p>Amount: @Model.Budget.Amount</p>
+                        <p>Start Date: @Model.Budget.StartDate.Date.ToString("d")</p>
+                        <p>End Date: @Model.Budget.EndDate.Date.ToString("d")</p>
+                        <a asp-action="Edit" asp-route-id="@Model.Budget.Id" class="btn"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Budget.Id" class="btn"><i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                        <a asp-controller="Expense" asp-action="Add" asp-route-budgetId="@Model.Budget.Id" class="btn"><i class="fa fa-plus" aria-hidden="true"></i> Add expense</a>
+                    </div>
+                    <div class="panel-footer">
+                        <a data-toggle="collapse" href="#expenses">Expenses</a>
+                    </div>
+                    <div id="expenses" class="panel-collapse collapse">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Amount</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        foreach (var expense in Model.Expenses)
+                                        {
+                                            <tr>
+                                                <td>@expense.Name</td>
+                                                <td>@expense.Amount</td>
+                                                <td>
+                                                    <a asp-controller="Expense" asp-action="Edit" asp-route-budgetId="@Model.Budget.Id" asp-route-expenseId="@expense.Id" class="btn btn-info btn-xs">Edit</a>
+                                                    <a asp-controller="Expense" asp-action="Delete" asp-route-budgetId="@Model.Budget.Id" asp-route-expenseId="@expense.Id" class="btn btn-danger btn-xs">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                        }
+    }
+</div>

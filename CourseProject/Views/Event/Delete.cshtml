@@ -1,0 +1,28 @@
+﻿@model Event
+@{
+    Layout = "_Layout";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @Model.Name
+    </div>
+    <div class="panel-body">
+        <p>@Model.Description </p>
+        <p>@Model.Location </p>
+        <p>@Model.StartDate </p>
+        <p>@Model.StartTime</p>
+        <p>@Model.EndDate</p>
+        <p>@Model.EndTime</p>
+    </div>
+    <div class="panel-footer">
+        <form asp-action="DeleteConfirmed">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-action="List" class="btn">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                Back
+            </a>
+        </form>
+    </div>
+</div>

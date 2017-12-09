@@ -1,0 +1,103 @@
+﻿@model Event
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div class="form-group">
+                <label asp-for="Name"></label>
+                <input type="text" class="form-control" asp-for="Name" value="@(Model != null ? Model.Name : "")" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description"></label>
+                <textarea class="form-control" rows="5" asp-for="Description">@(Model != null ? Model.Description : "")</textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location"></label>
+                <input type="text" class="form-control" asp-for="Location" value="@(Model != null ? Model.Location : "")" />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="datepicker">Pick start date</label>
+                        <div id="datePicker"></div>
+                        <input type="text" class="form-control" asp-for="StartDate" value="@(Model != null ? Model.StartDate.Date.ToString("d") : "")" />
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="StartTime"></label>
+                        <input class="timepicker form-control" asp-for="StartTime" value="@(Model != null ? Model.StartTime : "")" />
+                        <span asp-validation-for="StartTime" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="datepicker2">Pick end date</label>
+                        <div id="datePicker2"></div>
+                        <input type="text" class="form-control" asp-for="EndDate" value="@(Model != null ? Model.EndDate.Date.ToString("d") : "")" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="EndTime"></label>
+                        <input class="form-control timepicker" asp-for="EndTime" value="@(Model != null ? Model.EndTime : "")" />
+                        <span asp-validation-for="EndTime" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn">Save</button>
+            <a asp-action="List" class="btn">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                Back
+            </a>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#StartTime').timepicker({
+            timeFormat: 'HH:mm:ss',
+            interval: 10,
+            change: function (time) {
+                $('#EndTime').timepicker('option', 'minTime', time);
+            }
+        });
+    });
+
+    $(document).ready(function () {
+        $('#EndTime').timepicker({
+            timeFormat: 'HH:mm:ss',
+            interval: 10
+        });
+    });
+
+    $('#datePicker').datepicker({
+        todayBtn: "linked",
+        clearBtn: true,
+        autoclose: true,
+        todayHighlight: true,
+        startDate: new Date(),
+        datesDisabled: []
+    }).on('changeDate', showStartDate);
+
+    $('#datePicker2').datepicker({
+        todayBtn: "linked",
+        clearBtn: true,
+        autoclose: true,
+        todayHighlight: true,
+        startDate: new Date(),
+        datesDisabled: []
+    }).on('changeDate', showEndDate);
+
+    function showStartDate() {
+        var value = $('#datePicker').datepicker('getFormattedDate');
+        $('#StartDate').val(value);
+    }
+
+    function showEndDate() {
+        var value = $('#datePicker2').datepicker('getFormattedDate');
+        $('#EndDate').val(value);
+    }
+</script>

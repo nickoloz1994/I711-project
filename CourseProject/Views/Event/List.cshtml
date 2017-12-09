@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Event>
+@{
+    Layout = "_Layout";
+}
+
+<a asp-action="Create" class="btn" style="margin: 5px;">
+    <i class="fa fa-plus" aria-hidden="true"></i>
+    Add new event
+</a>
+
+<div class="panel-group">
+    @foreach (var evt in Model)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#@evt.Id">
+                    @evt.Name
+                </a>
+            </div>
+            <div id="@evt.Id" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <p>Description: @evt.Description</p>
+                    <p>Location: @evt.Location</p>
+                    <p>Start Date: @evt.StartDate.Date.ToString("d")</p>
+                    <p>Start Time: @evt.StartTime</p>
+                    <p>End Date: @evt.EndDate.Date.ToString("d")</p>
+                    <p>End Time: @evt.EndTime</p>
+                </div>
+                <div class="panel-footer">
+                    <a asp-action="Edit" asp-route-id="@evt.Id"><i class="material-icons md-36">create</i></a>
+                    <a asp-action="Delete" asp-route-id="@evt.Id"><i class="material-icons md-36">delete</i></a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -15,6 +15,12 @@ namespace CourseProject.Data
         {
         }
 
+        public DbSet<TodoItem> TodoItems { get; set; }
+        public DbSet<Event> Events { get; set; }
+        public DbSet<Budget> Budgets { get; set; }
+        public DbSet<TodoCategory> TodoCategories { get; set; }
+        public DbSet<Expense> Expenses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

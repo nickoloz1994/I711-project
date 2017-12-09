@@ -6,8 +6,7 @@
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding: 15px;
 }
 
 /* Carousel */
@@ -33,3 +32,21 @@
         display: none;
     }
 }
+
+a:link {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.navbar-brand {
+    padding: 0;
+}
+
+    .navbar-brand > img {
+        height: 100%;
+        padding: 10px;
+        width: auto;
+    }

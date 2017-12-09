@@ -18,4 +18,12 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\css\datepicker\" />
+    <Folder Include="wwwroot\css\bfhelpers\" />
+    <Folder Include="wwwroot\images\bfhelpers\" />
+    <Folder Include="wwwroot\js\datepicker\" />
+    <Folder Include="wwwroot\js\bfhelpers\" />
+  </ItemGroup>
+
 </Project>
