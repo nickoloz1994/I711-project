@@ -15,7 +15,11 @@ namespace CourseProject.Services
 
         public IEnumerable<Budget> GetAll(string ownerID)
         {
-            return _context.Budgets.Where(b => b.OwnerID == ownerID).ToList();
+            return _context.Budgets
+                .Where(b => b.OwnerID == ownerID &&
+                       DateTime.Compare(b.EndDate, DateTime.Now) > 0)
+                .OrderBy(b => b.StartDate)
+                .ToList();
         }
 
         public void AddExpense(int id, Expense expense)

@@ -60,7 +60,16 @@ namespace CourseProject.Controllers
                 return View(vm);
             }
 
-            vm.Budgets = budgets;
+            var budget = _budgetRepo.GetAll(userID).FirstOrDefault();
+
+            if (budget != null)
+            {
+                vm.Budget = budget;
+                vm.Expenses = _budgetRepo.GetExpenses(budget.Id);
+                vm.Budgets = budgets;
+
+                return View(vm);
+            }
 
             return View(vm);
         }
