@@ -6,48 +6,7 @@
 <div class="row">
     <div class="col-md-6">
         <form asp-controller="Expense" asp-action="Edit">
-            <div class="form-group">
-                <label asp-for="Name"></label>
-                <input type="text" class="form-control" asp-for="Name" value="@Model.Name" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Amount"></label>
-                <input type="text" class="form-control" asp-for="Amount" value="@Model.Amount" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label for="datepicker">Date</label>
-                <div id="datePicker"></div>
-                <input type="text" class="form-control" asp-for="DateTime" value="@Model.DateTime" />
-                <span asp-validation-for="DateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Note"></label>
-                <textarea class="form-control" rows="5" asp-for="Note"> @Model.Note </textarea>
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn">Save</button>
-            <a asp-controller="Budget" asp-action="List" class="btn">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i>
-                Back
-            </a>
+            @Html.Partial("_ExpenseCreateEditPartial", Model)
         </form>
     </div>
 </div>
-
-<script>
-    $('#datePicker').datepicker({
-        todayBtn: "linked",
-        clearBtn: true,
-        autoclose: true,
-        todayHighlight: true,
-        startDate: new Date(),
-        datesDisabled: []
-    }).on('changeDate', showDate);
-
-    function showDate() {
-        var value = $('#datePicker').datepicker('getFormattedDate');
-        $('#DateTime').val(value);
-    }
-</script>

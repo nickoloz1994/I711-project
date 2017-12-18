@@ -1,0 +1,66 @@
+﻿@model MonthlyReportViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    <canvas id="canvas"></canvas>
+</div>
+
+<script>
+    var expenses = @Html.Raw(Json.Serialize(Model.MonthlyExpenses));
+    var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var config = {
+        type: 'line',
+        data: {
+            labels: MONTHS,
+            datasets: [{
+                label: "Monthly Expenses",
+                backgroundColor: window.chartColors.fullred,
+                borderColor: window.chartColors.fullred,
+                data: expenses,
+                fill: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            title: {
+                display: true,
+                text: 'Monthly report'
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Month'
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Value'
+                    },
+                    ticks: {
+                        stepSize: 20
+                    }
+                }]
+            }
+        }
+    };
+
+    window.onload = function () {
+        var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx, config);
+    };
+</script>

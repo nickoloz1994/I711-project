@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using CourseProject.Models;
 using CourseProject.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using CourseProject.Authorization;
 
 namespace CourseProject.Controllers
 {
@@ -9,16 +13,23 @@ namespace CourseProject.Controllers
     public class EventController : Controller
     {
         private IEventRepository _evtRepo;
+        private UserManager<ApplicationUser> _userManager;
+        private IAuthorizationService _authorizationService;
 
-        public EventController(IEventRepository evtRepo)
+        public EventController(IEventRepository evtRepo,
+                               UserManager<ApplicationUser> userManager,
+                               IAuthorizationService authorizationService)
         {
             _evtRepo = evtRepo;
+            _userManager = userManager;
+            _authorizationService = authorizationService;
         }
 
         [HttpGet]
         public IActionResult List()
         {
-            IEnumerable<Event> events = events = _evtRepo.GetAll();
+            var userID = _userManager.GetUserId(User);
+            IEnumerable<Event> events = _evtRepo.GetAll(userID);
 
             return View(events);
         }
@@ -30,46 +41,89 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create(
+        public async Task<IActionResult> Create(
             [Bind("Name,Description,Location,StartDate,StartTime,EndDate,EndTime")] Event evt)
         {
-            if (evt == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return View(evt);
             }
 
-            if (ModelState.IsValid)
+            var newEvent = new Event
             {
-                _evtRepo.Add(evt);
-                _evtRepo.Save();
-                return RedirectToAction(nameof(List));
+                Name = evt.Name,
+                Location = evt.Location,
+                Description = evt.Description,
+                StartDate = evt.StartDate,
+                StartTime = evt.StartTime,
+                EndDate = evt.EndDate,
+                EndTime = evt.EndTime,
+                OwnerID = _userManager.GetUserId(User)
+            };
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, newEvent,
+                                                                Operations.Create);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
-            return View(evt);
+            _evtRepo.Add(newEvent);
+            _evtRepo.Save();
+            return RedirectToAction(nameof(List));
         }
 
         [HttpGet("edit/{id}")]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var evt = _evtRepo.Get(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var evt = _evtRepo.Get((int)id);
             if (evt == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, evt,
+                                                                Operations.Update);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
             return View(evt);
         }
 
         [HttpPost("edit/{id}")]
-        public IActionResult Edit(int id,
+        public async Task<IActionResult> Edit(int id,
             [Bind("Name,Description,Location,StartDate,StartTime,EndDate,EndTime")] Event evt)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(evt);
+            }
+
             var evtToEdit = _evtRepo.Get(id);
 
             if (evtToEdit == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, evtToEdit,
+                                                                Operations.Update);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
             evtToEdit.Name = evt.Name;
@@ -79,6 +133,8 @@ namespace CourseProject.Controllers
             evtToEdit.StartTime = evt.StartTime;
             evtToEdit.EndDate = evt.EndDate;
             evtToEdit.EndTime = evt.EndTime;
+
+            TryValidateModel(evtToEdit);
 
             if (ModelState.IsValid)
             {
@@ -91,26 +147,44 @@ namespace CourseProject.Controllers
         }
 
         [HttpGet("delete/{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var evtToDelete = _evtRepo.Get(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var evtToDelete = _evtRepo.Get((int)id);
 
             if (evtToDelete == null)
             {
                 return NotFound();
             }
 
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, evtToDelete,
+                                                                Operations.Delete);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
+            }
+
             return View(evtToDelete);
         }
 
         [HttpPost("delete/{id}")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var evtToDelete = _evtRepo.Get(id);
 
-            if (evtToDelete == null)
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, evtToDelete,
+                                                                Operations.Delete);
+
+            if (!isAuthorized.Succeeded)
             {
-                return BadRequest();
+                return new ChallengeResult();
             }
 
             _evtRepo.Remove(evtToDelete);

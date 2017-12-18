@@ -11,6 +11,8 @@ namespace CourseProject.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string OwnerID { get; set; }
+
         [Required]
         [Display(Name = "Budget Name")]
         [StringLength(100, MinimumLength = 3)]
@@ -32,7 +34,33 @@ namespace CourseProject.Models
         [DataType(DataType.Date)]
         public DateTime EndDate { get; set; }
 
-        //public IEnumerable<Expense> Expenses { get; set; }
         public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+
+        [NotMapped]
+        public decimal RemainingBudget
+        {
+            get
+            {
+                var expenses = 0M;
+                foreach (var expense in Expenses)
+                {
+                    expenses += expense.Amount;
+                }
+                return Amount - expenses;
+            }
+        }
+
+        public decimal SumExpenses
+        {
+            get
+            {
+                var expenses = 0M;
+                foreach (var expense in Expenses)
+                {
+                    expenses += expense.Amount;
+                }
+                return expenses;
+            }
+        }
     }
 }

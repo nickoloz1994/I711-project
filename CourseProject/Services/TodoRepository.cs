@@ -2,6 +2,7 @@
 using CourseProject.Data;
 using CourseProject.Models;
 using System.Linq;
+using System;
 
 namespace CourseProject.Services
 {
@@ -10,6 +11,14 @@ namespace CourseProject.Services
         public TodoRepository(ApplicationDbContext dbContext)
             : base(dbContext)
         {
+        }
+
+        public IEnumerable<TodoItem> GetAll(string ownerID)
+        {
+            return _context.TodoItems
+                .Where(t => t.OwnerID == ownerID)
+                .OrderBy(t => t.Date)
+                .ToList();
         }
 
         public void AddCategory(TodoCategory category)
@@ -27,10 +36,10 @@ namespace CourseProject.Services
             return _context.TodoCategories.Find(id);
         }
 
-        public IEnumerable<TodoItem> GetTodosByCategory(int id)
+        public IEnumerable<TodoItem> GetTodosByCategory(int id, string ownerID)
         {
             return _context.TodoItems
-                .Where(t => t.CategoryId == id)
+                .Where(t => t.CategoryId == id && t.OwnerID == ownerID)
                 .ToList();
         }
 

@@ -7,8 +7,8 @@ namespace CourseProject.Models.TodoViewModels
 {
     public class TodoListViewModel
     {
-        public IEnumerable<TodoItem> TodoItems { get; set; }
-        public IEnumerable<TodoCategory> TodoCategories { get; set; }
+        public IEnumerable<TodoItem> TodoItems { get; set; } = new List<TodoItem>();
+
         public TodoCategory Category { get; set; }
     }
 }

@@ -16,7 +16,7 @@ namespace CourseProject.Models
 
         [Required]
         [Range(0, 1000000)]
-        public int Amount { get; set; }
+        public decimal Amount { get; set; }
 
         [Display(Name = "Date and Time")]
         [DataType(DataType.DateTime)]

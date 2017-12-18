@@ -11,14 +11,24 @@ using Microsoft.Extensions.DependencyInjection;
 using CourseProject.Data;
 using CourseProject.Models;
 using CourseProject.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using CourseProject.Authorization;
 
 namespace CourseProject
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder();
+
+            if (env.IsDevelopment())
+            {
+                builder.AddUserSecrets<Startup>();
+            }
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -32,6 +42,24 @@ namespace CourseProject
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId = Configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+            });
+
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = Configuration["Authentication:Facebook:AppId"];
+                options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
+
+            services.AddAuthentication().AddMicrosoftAccount(options =>
+            {
+                options.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                options.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -67,6 +95,18 @@ namespace CourseProject
             services.AddScoped<ITodoRepository, TodoRepository>();
 
             services.AddMvc();
+
+            services.AddMvc(config =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                                    .RequireAuthenticatedUser()
+                                    .Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            });
+
+            services.AddScoped<IAuthorizationHandler, TodoIsOwnerAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, BudgetIsOwnerAuthorizationHandler>();
+            services.AddScoped<IAuthorizationHandler, EventIsOwnerAuthorizationHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

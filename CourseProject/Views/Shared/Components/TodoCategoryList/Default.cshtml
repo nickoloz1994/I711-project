@@ -1,0 +1,13 @@
+﻿@model IEnumerable<TodoCategory>
+<div class="col-md-3">
+    <ul class="nav nav-stacked">
+        @foreach (var cat in Model)
+            {
+            <li><a asp-controller="Todo" asp-action="List" asp-route-id="@cat.Id">@cat.Name </a></li>
+        }
+    </ul>
+    <a asp-controller="Category" asp-action="Create" class="btn" style="margin: 5px;">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Add Category
+    </a>
+</div>

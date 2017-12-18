@@ -10,6 +10,8 @@ namespace CourseProject.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string OwnerID { get; set; }
+
         [Required]
         [StringLength(100, MinimumLength = 3)]
         public string Title { get; set; }

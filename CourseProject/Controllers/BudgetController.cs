@@ -4,24 +4,53 @@ using CourseProject.Models;
 using CourseProject.Services;
 using CourseProject.Models.BudgetViewModels;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using CourseProject.Authorization;
 
 namespace CourseProject.Controllers
 {
     [Route("budgets")]
     public class BudgetController : Controller
     {
-        private IBudgetRepository _budgetRepo;
+        private List<string> Months = new List<string>(new string[]
+        {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"
+        });
 
-        public BudgetController(IBudgetRepository budgetRepo)
+        private IBudgetRepository _budgetRepo;
+        private IAuthorizationService _authorizationService;
+        private UserManager<ApplicationUser> _userManager;
+
+        public BudgetController(
+            IBudgetRepository budgetRepo,
+            IAuthorizationService authorizationService,
+            UserManager<ApplicationUser> userManager)
         {
             _budgetRepo = budgetRepo;
+            _authorizationService = authorizationService;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public IActionResult List(int? id)
+        public async Task<IActionResult> List(int? id)
         {
             var vm = new BudgetListViewModel();
-            IEnumerable<Budget> budgets = _budgetRepo.GetAll();
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var userID = _userManager.GetUserId(User);
+            IEnumerable<Budget> budgets = _budgetRepo.GetAll(userID);
 
             if (id != null)
             {
@@ -43,39 +72,85 @@ namespace CourseProject.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([Bind("Name,Amount,StartDate,EndDate")] Budget budget)
+        public async Task<IActionResult> Create([Bind("Name,Amount,StartDate,EndDate")] Budget budget)
         {
-            if (budget == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return View(budget);
             }
 
-            _budgetRepo.Add(budget);
+            var newBudget = new Budget
+            {
+                Name = budget.Name,
+                Amount = budget.Amount,
+                StartDate = budget.StartDate,
+                EndDate = budget.EndDate,
+                OwnerID = _userManager.GetUserId(User)
+            };
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                            User, newBudget,
+                                                            Operations.Create);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
+            }
+
+            _budgetRepo.Add(newBudget);
             _budgetRepo.Save();
             return RedirectToAction(nameof(List));
         }
 
         [HttpGet("edit/{id}")]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            var budgetToEdit = _budgetRepo.Get(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var budgetToEdit = _budgetRepo.Get((int)id);
 
             if (budgetToEdit == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                    User, budgetToEdit,
+                                                                    Operations.Update);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
             return View(budgetToEdit);
         }
 
         [HttpPost("edit/{id}")]
-        public IActionResult Edit(int id, [Bind("Name,Amount,StarDate,EndDate")] Budget budget)
+        public async Task<IActionResult> Edit(int id, [Bind("Name,Amount,StarDate,EndDate")] Budget budget)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(budget);
+            }
+
             var budgetToEdit = _budgetRepo.Get(id);
 
             if (budgetToEdit == null)
             {
                 return NotFound();
+            }
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, budgetToEdit,
+                                                                Operations.Update);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
             budgetToEdit.Name = budget.Name;
@@ -83,6 +158,7 @@ namespace CourseProject.Controllers
             budgetToEdit.StartDate = budget.StartDate;
             budgetToEdit.EndDate = budget.EndDate;
 
+            TryValidateModel(budgetToEdit);
             if (ModelState.IsValid)
             {
                 _budgetRepo.Update(budgetToEdit);
@@ -94,31 +170,72 @@ namespace CourseProject.Controllers
         }
 
         [HttpGet("delete/{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int? id)
         {
-            var budgetToDelete = _budgetRepo.Get(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var budgetToDelete = _budgetRepo.Get((int)id);
 
             if (budgetToDelete == null)
             {
-                return RedirectToAction(nameof(List));
+                //return RedirectToAction(nameof(List));
+                return NotFound();
+            }
+
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, budgetToDelete,
+                                                                Operations.Delete);
+
+            if (!isAuthorized.Succeeded)
+            {
+                return new ChallengeResult();
             }
 
             return View(budgetToDelete);
         }
 
         [HttpPost("delete/{id}"), ActionName("Delete")]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var budgetToDelete = _budgetRepo.Get(id);
 
-            if (budgetToDelete == null)
+            var isAuthorized = await _authorizationService.AuthorizeAsync(
+                                                                User, budgetToDelete,
+                                                                Operations.Delete);
+
+            if (!isAuthorized.Succeeded)
             {
-                return RedirectToAction(nameof(List));
+                return new ChallengeResult();
             }
 
             _budgetRepo.Remove(budgetToDelete);
             _budgetRepo.Save();
             return RedirectToAction(nameof(List));
+        }
+
+        [HttpGet("report")]
+        public IActionResult Report()
+        {
+            var vm = new MonthlyReportViewModel();
+            //var monthlyExpenses = new decimal[12];
+            var count = 0;
+
+            foreach (var month in Months)
+            {
+                var allExpenses = _budgetRepo.GetExpensesByMonth(month);
+
+                if (allExpenses.Any())
+                {
+                    vm.MonthlyExpenses[count] = allExpenses.Sum();
+                }
+
+                count++;
+            }
+
+            return View(vm);
         }
     }
 }

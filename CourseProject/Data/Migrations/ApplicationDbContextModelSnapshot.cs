@@ -84,6 +84,8 @@ namespace CourseProject.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100);
 
+                    b.Property<string>("OwnerID");
+
                     b.Property<DateTime>("StartDate");
 
                     b.HasKey("Id");
@@ -110,6 +112,8 @@ namespace CourseProject.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100);
 
+                    b.Property<string>("OwnerID");
+
                     b.Property<DateTime>("StartDate");
 
                     b.Property<string>("StartTime");
@@ -124,7 +128,7 @@ namespace CourseProject.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Amount");
+                    b.Property<decimal>("Amount");
 
                     b.Property<int>("BudgetId");
 
@@ -168,6 +172,8 @@ namespace CourseProject.Data.Migrations
                     b.Property<bool>("Complete");
 
                     b.Property<DateTime>("Date");
+
+                    b.Property<string>("OwnerID");
 
                     b.Property<string>("Title")
                         .IsRequired()

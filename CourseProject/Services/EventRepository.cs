@@ -1,5 +1,7 @@
-﻿using CourseProject.Data;
+﻿using System.Collections.Generic;
+using CourseProject.Data;
 using CourseProject.Models;
+using System.Linq;
 
 namespace CourseProject.Services
 {
@@ -8,6 +10,11 @@ namespace CourseProject.Services
         public EventRepository(ApplicationDbContext dbContext)
             : base(dbContext)
         {
+        }
+
+        public IEnumerable<Event> GetAll(string ownerID)
+        {
+            return _context.Events.Where(e => e.OwnerID == ownerID).ToList();
         }
     }
 }

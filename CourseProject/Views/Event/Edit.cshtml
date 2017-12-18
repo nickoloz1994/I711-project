@@ -3,4 +3,10 @@
     Layout = "_Layout";
 }
 
-@Html.Partial("_CreateEditPartial", Model)
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            @Html.Partial("_CreateEditPartial", Model)
+        </form>
+    </div>
+</div>

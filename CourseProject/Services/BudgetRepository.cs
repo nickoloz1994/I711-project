@@ -2,6 +2,7 @@
 using CourseProject.Data;
 using CourseProject.Models;
 using System.Linq;
+using System;
 
 namespace CourseProject.Services
 {
@@ -10,6 +11,11 @@ namespace CourseProject.Services
         public BudgetRepository(ApplicationDbContext dbContext)
             : base(dbContext)
         {
+        }
+
+        public IEnumerable<Budget> GetAll(string ownerID)
+        {
+            return _context.Budgets.Where(b => b.OwnerID == ownerID).ToList();
         }
 
         public void AddExpense(int id, Expense expense)
@@ -34,6 +40,15 @@ namespace CourseProject.Services
         {
             return _context.Expenses
                 .Where(e => e.BudgetId == id)
+                .OrderBy(e => e.DateTime)
+                .ToList();
+        }
+
+        public IEnumerable<decimal> GetExpensesByMonth(string month)
+        {
+            return _context.Expenses
+                .Where(e => e.DateTime.Year == DateTime.Now.Year && e.DateTime.ToString("MMMM") == month)
+                .Select(e => e.Amount)
                 .ToList();
         }
 

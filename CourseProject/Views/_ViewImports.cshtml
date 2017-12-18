@@ -1,7 +1,12 @@
+@using CourseProject
 @using Microsoft.AspNetCore.Identity
 @using CourseProject.Models
 @using CourseProject.Models.AccountViewModels
 @using CourseProject.Models.ManageViewModels
 @using CourseProject.Models.TodoViewModels
 @using CourseProject.Models.BudgetViewModels
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using CourseProject.Authorization
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+@addTagHelper *, CourseProject
+    @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

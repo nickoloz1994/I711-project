@@ -10,6 +10,8 @@ namespace CourseProject.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
+        public string OwnerID { get; set; }
+
         [Required]
         [Display(Name = "Event Name")]
         [StringLength(100, MinimumLength = 3)]

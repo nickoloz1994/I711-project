@@ -5,13 +5,15 @@ namespace CourseProject.Services
 {
     public interface ITodoRepository : IRepository<TodoItem>
     {
+        IEnumerable<TodoItem> GetAll(string ownerID);
+
         void AddCategory(TodoCategory category);
 
         IEnumerable<TodoCategory> GetCategories();
 
         TodoCategory GetCategory(int id);
 
-        IEnumerable<TodoItem> GetTodosByCategory(int id);
+        IEnumerable<TodoItem> GetTodosByCategory(int id, string ownerID);
 
         void RemoveCategory(TodoCategory category);
 

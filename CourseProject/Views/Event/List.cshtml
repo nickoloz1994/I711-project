@@ -27,8 +27,25 @@
                     <p>End Time: @evt.EndTime</p>
                 </div>
                 <div class="panel-footer">
-                    <a asp-action="Edit" asp-route-id="@evt.Id"><i class="material-icons md-36">create</i></a>
-                    <a asp-action="Delete" asp-route-id="@evt.Id"><i class="material-icons md-36">delete</i></a>
+                    @{
+                        var isAuthorizedToEdit = await AuthorizationService.AuthorizeAsync(
+                                                                User, evt, Operations.Update);
+                        if (isAuthorizedToEdit.Succeeded)
+                        {
+                            <a class="btn btn-link" asp-action="Edit" asp-route-id="@evt.Id">
+                                <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
+                            </a>
+                        }
+
+                        var isAuthorizedToDelete = await AuthorizationService.AuthorizeAsync(
+                                                                    User, evt, Operations.Delete);
+                        if (isAuthorizedToDelete.Succeeded)
+                        {
+                            <a class="btn btn-link" asp-action="Delete" asp-route-id="@evt.Id">
+                                <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                            </a>
+                        }
+                    }
                 </div>
             </div>
         </div>

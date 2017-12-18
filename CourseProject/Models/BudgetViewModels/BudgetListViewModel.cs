@@ -11,4 +11,9 @@ namespace CourseProject.Models.BudgetViewModels
         public Budget Budget { get; set; }
         public IEnumerable<Expense> Expenses { get; set; } = new List<Expense>();
     }
+
+    public class MonthlyReportViewModel
+    {
+        public decimal[] MonthlyExpenses = new decimal[12];
+    }
 }
