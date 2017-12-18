@@ -2,6 +2,7 @@
 using CourseProject.Data;
 using CourseProject.Models;
 using System.Linq;
+using System;
 
 namespace CourseProject.Services
 {
@@ -14,7 +15,24 @@ namespace CourseProject.Services
 
         public IEnumerable<Event> GetAll(string ownerID)
         {
-            return _context.Events.Where(e => e.OwnerID == ownerID).ToList();
+            return _context.Events
+                .Where(e => e.OwnerID == ownerID).ToList();
+        }
+
+        public IEnumerable<Event> GetPrevious(string ownerID)
+        {
+            return _context.Events
+                .Where(e => e.OwnerID == ownerID &&
+                       DateTime.Compare(e.EndDate, DateTime.Now) < 0)
+                .ToList();
+        }
+
+        public IEnumerable<Event> GetUpcoming(string ownerID)
+        {
+            return _context.Events
+                .Where(e => e.OwnerID == ownerID &&
+                       DateTime.Compare(e.EndDate.Date, DateTime.Now) > 0)
+                .ToList();
         }
     }
 }

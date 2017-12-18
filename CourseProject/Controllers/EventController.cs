@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using CourseProject.Authorization;
+using System;
 
 namespace CourseProject.Controllers
 {
@@ -26,11 +27,29 @@ namespace CourseProject.Controllers
         }
 
         [HttpGet]
-        public IActionResult List()
+        public IActionResult List(string filter)
         {
             var userID = _userManager.GetUserId(User);
-            IEnumerable<Event> events = _evtRepo.GetAll(userID);
+            IEnumerable<Event> events = new List<Event>();
 
+            if (!String.IsNullOrWhiteSpace(filter))
+            {
+                if (filter == "previous")
+                {
+                    events = _evtRepo.GetPrevious(userID);
+                    return View(events);
+                }
+                else
+                {
+                    if (filter == "upcoming")
+                    {
+                        events = _evtRepo.GetUpcoming(userID);
+                        return View(events);
+                    }
+                }
+            }
+
+            events = _evtRepo.GetAll(userID);
             return View(events);
         }
 

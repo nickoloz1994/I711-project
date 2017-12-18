@@ -8,46 +8,63 @@
     Add new event
 </a>
 
-<div class="panel-group">
-    @foreach (var evt in Model)
-    {
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <a data-toggle="collapse" href="#@evt.Id">
-                    @evt.Name
-                </a>
-            </div>
-            <div id="@evt.Id" class="panel-collapse collapse">
-                <div class="panel-body">
-                    <p>Description: @evt.Description</p>
-                    <p>Location: @evt.Location</p>
-                    <p>Start Date: @evt.StartDate.Date.ToString("d")</p>
-                    <p>Start Time: @evt.StartTime</p>
-                    <p>End Date: @evt.EndDate.Date.ToString("d")</p>
-                    <p>End Time: @evt.EndTime</p>
-                </div>
-                <div class="panel-footer">
-                    @{
-                        var isAuthorizedToEdit = await AuthorizationService.AuthorizeAsync(
-                                                                User, evt, Operations.Update);
-                        if (isAuthorizedToEdit.Succeeded)
-                        {
-                            <a class="btn btn-link" asp-action="Edit" asp-route-id="@evt.Id">
-                                <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
-                            </a>
-                        }
+<a class="btn" style="margin: 5px;"
+   asp-action="List"
+   asp-route-filter="previous">
+    <i class="fa fa-history" aria-hidden="true"></i>
+    Previous events
+</a>
+<a class="btn" style="margin: 5px;"
+   asp-action="List"
+   asp-route-filter="upcoming">
+    <i class="fa fa-calendar-o" aria-hidden="true"></i>
+    Upcoming events
+</a>
 
-                        var isAuthorizedToDelete = await AuthorizationService.AuthorizeAsync(
-                                                                    User, evt, Operations.Delete);
-                        if (isAuthorizedToDelete.Succeeded)
-                        {
-                            <a class="btn btn-link" asp-action="Delete" asp-route-id="@evt.Id">
-                                <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
-                            </a>
-                        }
-                    }
+<div class="row">
+    <div class="col-xs-12 col-md-6">
+        <div class="panel-group">
+            @foreach (var evt in Model)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href="#@evt.Id">
+                            @evt.Name
+                        </a>
+                    </div>
+                    <div id="@evt.Id" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <p>Description: @evt.Description</p>
+                            <p>Location: @evt.Location</p>
+                            <p>Start Date: @evt.StartDate.Date.ToString("d")</p>
+                            <p>Start Time: @evt.StartTime</p>
+                            <p>End Date: @evt.EndDate.Date.ToString("d")</p>
+                            <p>End Time: @evt.EndTime</p>
+                        </div>
+                        <div class="panel-footer">
+                            @{
+                                var isAuthorizedToEdit = await AuthorizationService.AuthorizeAsync(
+                                                                        User, evt, Operations.Update);
+                                if (isAuthorizedToEdit.Succeeded)
+                                {
+                                    <a class="btn btn-link" asp-action="Edit" asp-route-id="@evt.Id">
+                                        <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
+                                    </a>
+                                }
+
+                                var isAuthorizedToDelete = await AuthorizationService.AuthorizeAsync(
+                                                                            User, evt, Operations.Delete);
+                                if (isAuthorizedToDelete.Succeeded)
+                                {
+                                    <a class="btn btn-link" asp-action="Delete" asp-route-id="@evt.Id">
+                                        <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
-    }
+    </div>
 </div>
