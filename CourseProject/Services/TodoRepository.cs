@@ -21,6 +21,22 @@ namespace CourseProject.Services
                 .ToList();
         }
 
+        public IEnumerable<TodoItem> GetDone(string ownerID)
+        {
+            return _context.TodoItems
+                .Where(t => t.OwnerID == ownerID && t.Complete == true)
+                .OrderByDescending(t => t.Date)
+                .ToList();
+        }
+
+        public IEnumerable<TodoItem> GetPending(string ownerID)
+        {
+            return _context.TodoItems
+                .Where(t => t.OwnerID == ownerID && t.Complete == false)
+                .OrderBy(t => t.Date)
+                .ToList();
+        }
+
         public void AddCategory(TodoCategory category)
         {
             _context.TodoCategories.Add(category);

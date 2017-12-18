@@ -7,6 +7,10 @@ namespace CourseProject.Services
     {
         IEnumerable<TodoItem> GetAll(string ownerID);
 
+        IEnumerable<TodoItem> GetDone(string ownerID);
+
+        IEnumerable<TodoItem> GetPending(string ownerID);
+
         void AddCategory(TodoCategory category);
 
         IEnumerable<TodoCategory> GetCategories();

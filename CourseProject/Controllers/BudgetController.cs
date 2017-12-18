@@ -220,7 +220,6 @@ namespace CourseProject.Controllers
         public IActionResult Report()
         {
             var vm = new MonthlyReportViewModel();
-            //var monthlyExpenses = new decimal[12];
             var count = 0;
 
             foreach (var month in Months)

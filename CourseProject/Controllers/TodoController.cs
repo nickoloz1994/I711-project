@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using CourseProject.Authorization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
+using System;
 
 namespace CourseProject.Controllers
 {
@@ -31,13 +32,31 @@ namespace CourseProject.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> List(int? id)
+        public async Task<IActionResult> List(int? id, string filter)
         {
             var vm = new TodoListViewModel();
             IEnumerable<TodoItem> todos = new List<TodoItem>();
             var res = _todoRepo.GetCategories().FirstOrDefault(c => c.Id == 1);
             var user = await _userManager.GetUserAsync(HttpContext.User);
             var userID = _userManager.GetUserId(User);
+
+            if (!String.IsNullOrWhiteSpace(filter) && filter == "complete")
+            {
+                vm.Category = res;
+                vm.TodoItems = _todoRepo.GetDone(userID);
+
+                return View(vm);
+            }
+            else
+            {
+                if (filter == "pending")
+                {
+                    vm.Category = res;
+                    vm.TodoItems = _todoRepo.GetPending(userID);
+
+                    return View(vm);
+                }
+            }
 
             if (id != null && id != 1)
             {

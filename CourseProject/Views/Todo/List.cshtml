@@ -13,6 +13,20 @@
         <i class="fa fa-plus" aria-hidden="true"></i>
         Add new task
     </a>
+    <a class="btn" style="margin: 5px;"
+       asp-controller="Todo"
+       asp-action="List"
+       asp-route-filter="complete">
+        <i class="fa fa-check-square-o" aria-hidden="true"></i>
+        Completed tasks
+    </a>
+    <a class="btn" style="margin: 5px;"
+       asp-controller="Todo"
+       asp-action="List"
+       asp-route-filter="pending">
+        <i class="fa fa-square-o" aria-hidden="true"></i>
+        Pending tasks
+    </a>
     <div class="dropdown" style="display: inline">
         <a class="btn dropdown-toggle" data-toggle="dropdown" style="margin: 5px;">
             <i class="fa fa-cogs" aria-hidden="true"></i>
