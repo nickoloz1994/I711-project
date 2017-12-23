@@ -36,36 +36,8 @@
         </div>
     </div>
 </div>
-<button type="submit" class="btn">Save</button>
-<a asp-action="List" class="btn">
+<button type="submit" class="btn btn-success">Save</button>
+<a asp-action="List" class="btn btn-simple btn-info">
     <i class="fa fa-chevron-left" aria-hidden="true"></i>
     Back
 </a>
-
-<script>
-    $('#datePicker').datepicker({
-        todayBtn: "linked",
-        clearBtn: true,
-        autoclose: true,
-        todayHighlight: true,
-        startDate: new Date()
-    }).on('changeDate', showStartDate);
-
-    $('#datePicker2').datepicker({
-        todayBtn: "linked",
-        clearBtn: true,
-        autoclose: true,
-        todayHighlight: true,
-        startDate: new Date()
-    }).on('changeDate', showEndDate);
-
-    function showStartDate() {
-        var value = $('#datePicker').datepicker('getFormattedDate');
-        $('#StartDate').val(value);
-    }
-
-    function showEndDate() {
-        var value = $('#datePicker2').datepicker('getFormattedDate');
-        $('#EndDate').val(value);
-    }
-</script>

@@ -3,18 +3,18 @@
     Layout = "_Layout";
 }
 
-<a asp-action="Create" class="btn" style="margin: 5px;">
+<a asp-action="Create" class="btn btn-simple btn-info" style="margin: 5px;">
     <i class="fa fa-plus" aria-hidden="true"></i>
     Add new event
 </a>
 
-<a class="btn" style="margin: 5px;"
+<a class="btn btn-simple btn-info" style="margin: 5px;"
    asp-action="List"
    asp-route-filter="previous">
     <i class="fa fa-history" aria-hidden="true"></i>
     Previous events
 </a>
-<a class="btn" style="margin: 5px;"
+<a class="btn btn-simple btn-info" style="margin: 5px;"
    asp-action="List"
    asp-route-filter="upcoming">
     <i class="fa fa-calendar-o" aria-hidden="true"></i>
@@ -28,7 +28,7 @@
             {
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a data-toggle="collapse" href="#@evt.Id">
+                        <a class="btn btn-simple btn-info" style="padding: 0; margin: 0;" data-toggle="collapse" href="#@evt.Id">
                             @evt.Name
                         </a>
                     </div>
@@ -47,7 +47,7 @@
                                                                         User, evt, Operations.Update);
                                 if (isAuthorizedToEdit.Succeeded)
                                 {
-                                    <a class="btn btn-link" asp-action="Edit" asp-route-id="@evt.Id">
+                                    <a class="btn btn-simple btn-info" style="padding: 0; margin: 0;" asp-action="Edit" asp-route-id="@evt.Id">
                                         <i class="fa fa-pencil fa-lg" aria-hidden="true"></i>
                                     </a>
                                 }
@@ -56,7 +56,7 @@
                                                                             User, evt, Operations.Delete);
                                 if (isAuthorizedToDelete.Succeeded)
                                 {
-                                    <a class="btn btn-link" asp-action="Delete" asp-route-id="@evt.Id">
+                                    <a class="btn btn-simple btn-info" style="padding: 0; margin: 0 0 0 4px;" asp-action="Delete" asp-route-id="@evt.Id">
                                         <i class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
                                     </a>
                                 }

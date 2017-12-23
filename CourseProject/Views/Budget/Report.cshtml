@@ -8,7 +8,10 @@
     <canvas id="canvas"></canvas>
 </div>
 
-<script>
+@section Scripts {
+    <script src="~/lib/bower/chart.js/dist/Chart.bundle.min.js"></script>
+    <script src="~/lib/bower/chart.js/samples/utils.js"></script>
+    <script>
     var expenses = @Html.Raw(Json.Serialize(Model.MonthlyExpenses));
     var MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var config = {
@@ -63,4 +66,5 @@
         var ctx = document.getElementById("canvas").getContext("2d");
         window.myLine = new Chart(ctx, config);
     };
-</script>
+    </script>
+}

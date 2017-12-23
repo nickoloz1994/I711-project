@@ -9,19 +9,28 @@
             @foreach (var budget in Model.Budgets)
             {
                 <li>
-                    <a asp-action="List"
-                       asp-route-id="@budget.Id">@budget.Name</a>
+                    <a class="btn btn-simple btn-info"
+                       style="text-align: left;"
+                       asp-action="List"
+                       asp-route-id="@budget.Id">
+                        <i class="fa fa-circle-o" aria-hidden="true"></i>
+                        @budget.Name
+                    </a>
                 </li>
             }
+            <li>
+                <a asp-action="Create" class="btn btn-simple btn-info" style="text-align: left;">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    Add new budget
+                </a>
+            </li>
+            <li>
+                <a asp-action="Report" class="btn btn-simple btn-info" style="text-align: left;">
+                    <i class="fa fa-book" aria-hidden="true"></i>
+                    Monthly Report
+                </a>
+            </li>
         </ul>
-        <a asp-action="Create" class="btn" style="margin: 5px;">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            Add new budget
-        </a>
-        <a asp-action="Report" class="btn" style="margin: 5px;">
-            <i class="fa fa-book" aria-hidden="true"></i>
-            Monthly Report
-        </a>
     </div>
     @{
         if (Model.Budget != null)
@@ -42,7 +51,7 @@
                                                                 User, Model.Budget, Operations.Update);
                                     if (isAuthorized.Succeeded)
                                     {
-                                        <a class="btn"
+                                        <a class="btn btn-simple btn-info"
                                            asp-action="Edit"
                                            asp-route-id="@Model.Budget.Id">
                                             <i class="fa fa-pencil" aria-hidden="true"></i> Edit
@@ -53,14 +62,14 @@
                                                                     User, Model.Budget, Operations.Delete);
                                     if (isAuthorizedToDelete.Succeeded)
                                     {
-                                        <a class="btn"
+                                        <a class="btn btn-simple btn-info"
                                            asp-action="Delete"
                                            asp-route-id="@Model.Budget.Id">
                                             <i class="fa fa-trash" aria-hidden="true"></i> Delete
                                         </a>
                                     }
                                 }
-                                <a class="btn"
+                                <a class="btn btn-simple btn-info"
                                    asp-controller="Expense"
                                    asp-action="Add"
                                    asp-route-budgetId="@Model.Budget.Id">
@@ -75,7 +84,7 @@
                         </div>
                     </div>
                     <div class="panel-footer">
-                        <a data-toggle="collapse" href="#expenses">Expenses</a>
+                        <a class="btn btn-simple btn-info" style="padding: 0; margin: 0;" data-toggle="collapse" href="#expenses">Expenses</a>
                     </div>
                     <div id="expenses" class="panel-collapse collapse">
                         <div class="table-responsive">
@@ -120,49 +129,53 @@
     }
 </div>
 
-<script>
-    var remaining = function () {
-        return parseFloat(document.getElementById('remainingBudget').value);
-    };
+@section Scripts {
+    <script src="~/lib/bower/chart.js/dist/Chart.bundle.min.js"></script>
+    <script src="~/lib/bower/chart.js/samples/utils.js"></script>
+    <script>
+        var remaining = function () {
+            return parseFloat(document.getElementById('remainingBudget').value);
+        };
 
-    var expenses = function () {
-        return parseFloat(document.getElementById('expensesSum').value);
-    };
+        var expenses = function () {
+            return parseFloat(document.getElementById('expensesSum').value);
+        };
 
-    var ctx = document.getElementById('remaining').getContext('2d');
-    var myDoughnutChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [
-                    expenses(),
-                    remaining(),
+        var ctx = document.getElementById('remaining').getContext('2d');
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [
+                        expenses(),
+                        remaining(),
 
-                ],
-                backgroundColor: [
-                    window.chartColors.orange,
-                    window.chartColors.blue,
-                ],
-                label: 'Dataset 1'
-            }],
-            labels: [
-                "Expenses",
-                "Remaining",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
+                    ],
+                    backgroundColor: [
+                        window.chartColors.orange,
+                        window.chartColors.blue,
+                    ],
+                    label: 'Dataset 1'
+                }],
+                labels: [
+                    "Expenses",
+                    "Remaining",
+                ]
             },
-            title: {
-                display: true,
-                text: 'Expenses/Remaining'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Expenses/Remaining'
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
+}

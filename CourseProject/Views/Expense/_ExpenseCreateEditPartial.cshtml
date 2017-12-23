@@ -25,11 +25,12 @@
 <div class="form-group">
     <label asp-for="Note"></label>
     <textarea class="form-control" rows="5"
-              asp-for="Note">@(Model != null ? Model.Note : "")</textarea>
+              asp-for="Note"
+              placeholder="Enter your note">@(Model != null ? Model.Note : "")</textarea>
     <span asp-validation-for="Note" class="text-danger"></span>
 </div>
-<button type="submit" class="btn">Save</button>
-<a asp-controller="Budget" asp-action="List" class="btn">
+<button type="submit" class="btn btn-success">Save</button>
+<a asp-controller="Budget" asp-action="List" class="btn btn-simple btn-info">
     <i class="fa fa-chevron-left" aria-hidden="true"></i>
     Back
 </a>
