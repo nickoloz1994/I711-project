@@ -30,3 +30,24 @@ function showEndDate() {
     var value = $('#datePicker2').datepicker('getFormattedDate');
     $('#EndDate').val(value);
 }
+
+// Timepicker functions
+$(document).ready(function () {
+    var today = new Date();
+    var timeNow = today.getHours() + ":" + today.getMinutes();
+    $('#StartTime').timepicker({
+        timeFormat: 'HH:mm:ss',
+        minTime: timeNow,
+        interval: 10,
+        change: function (time) {
+            $('#EndTime').timepicker('option', 'minTime', time);
+        }
+    });
+});
+
+$(document).ready(function () {
+    $('#EndTime').timepicker({
+        timeFormat: 'HH:mm:ss',
+        interval: 10
+    });
+});
